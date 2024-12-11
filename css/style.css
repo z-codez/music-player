@@ -11,22 +11,27 @@ body {
 
 #music-player {
     width: 450px;
-    margin: auto;
+    margin: 0 auto;
     background-color: #1B1B32;
     padding: 10px;
 }
+
 
 header {
     font-size: 18px;
     font-family: 'Roboto Mono', monospace;
     display: flex;
     justify-content: space-between;
-    background-color: #4D4D62;
     margin-bottom: 10px;
+    margin-top: 10px;
     padding-bottom: 4px;
     padding-right: 10px;
     padding-left: 10px;
     align-items: center;
+}
+
+header, #controls {
+    background-color: #4D4D62;
 }
 
 header .parallel-lines {
@@ -45,5 +50,26 @@ header p {
 
 .parallel-lines div:first-of-type{
     margin-bottom: 6px;
+}
+
+#controls {
+    display: flex;
+    padding: 10px;
+    align-items: center;
+}
+
+figure img {
+    object-fit: cover;
+    width: 162px;
+    height: 162px;
+    border: 6px solid #1B1B32;
+    margin-left: -40px;
+}
+
+.buttons {
+    width: 238px;
+    height: 150px;
+    background-color: #1B1B32;
+    margin-left: -30px;
 }
 
