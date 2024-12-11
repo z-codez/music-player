@@ -85,8 +85,8 @@ figure img {
 
 #playlist {
     font-weight: 300;
-    font-size: 16px;
-    padding: 10px;
+    font-size: 13.5px;
+    padding:0 10px;
     margin: 0;    /*padding: 10px;*/
 }
 
@@ -95,10 +95,12 @@ figure img {
 }
 
 #playlist > li {
+    padding: 10px 0;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 15px;
 }
 
 #playlist > li div {
@@ -108,7 +110,6 @@ figure img {
 }
 
 #playlist button {
-    margin-left: 10px;
     border: none;
     background: #4D4D62;
     border-radius: 100%;
