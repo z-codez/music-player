@@ -7,11 +7,14 @@ const nextButton = document.getElementById("next");
 const shuffleButton = document.getElementById("shuffle");
 
 
-const goToPreviousSong = () => {}
+const goToPreviousSong = () => {
+}
 const pauseSong = () => {}
 const goToNextSong = () => {}
 const shuffleSongs = () => {}
-const playSong = () => {}
+const playSong = () => {
+
+}
 // EVENT LISTENERS
 
 playButton.addEventListener('click', playSong);
@@ -21,6 +24,14 @@ nextButton.addEventListener('click', goToNextSong);
 shuffleButton.addEventListener('click', shuffleSongs);
 
 
+let currentSong = "";
+
+function selectedSong(e) {
+    currentSong = e.target.id;
+    console.log("Current Song ID:" + currentSong);
+
+    document.getElementById(currentSong).style.backgroundColor = "#1B1B32";
+}
 
 
 const allSongs = [
@@ -104,21 +115,28 @@ function displaySongs() {
 
     const HTMLString = `
     <li>
-        <p>${song.title}</p>
-          <div>
-            <span>${song.artist}</span>
-            <span>${song.duration}</span>
-            <button  class="delete ${song.id}" type="button" aria-label="Delete">
-              <img id="${song.id}" src="../svg/delete.svg" alt=""/>
-            </button>
-          </div>
+        <div id="${song.id}" class="song-title-artist">
+            <p>${song.title}</p>
+            <div>
+                <span>${song.artist}</span>
+                <span>${song.duration}</span>
+            </div>
+        </div>
+        <button  class="delete ${song.id}" type="button" aria-label="Delete">
+            <img id="${song.id}" src="../svg/delete.svg" alt=""/>
+        </button>
     </li>
     `;
     playlistContainer.innerHTML += HTMLString;
 })
 
+    const selectSongs = document.querySelectorAll("li > div")
+
     const deleteButtons = document.querySelectorAll(".delete");
 
+    selectSongs.forEach(eachSong => {
+        eachSong.addEventListener('click', selectedSong);
+    })
     deleteButtons.forEach(deleteButton => {
         deleteButton.addEventListener('click', deleteSong);
     });

@@ -77,11 +77,16 @@ figure img {
     padding-bottom: 10px;
 }
 
+.buttons img:active {
+    fill: #F1BE32;
+}
+
 .buttons > button {
     cursor: pointer;
     background: none;
     border: none;
 }
+
 
 #playlist {
     font-weight: 300;
@@ -98,15 +103,20 @@ figure img {
     padding: 10px 0;
     cursor: pointer;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     gap: 15px;
 }
 
-#playlist > li div {
+.song-title-artist {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.song-title-artist div {
     display: flex;
     gap: 10px;
-    align-items: center;
 }
 
 #playlist button {
