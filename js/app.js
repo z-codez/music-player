@@ -7,18 +7,50 @@ const nextButton = document.getElementById("next");
 const shuffleButton = document.getElementById("shuffle");
 
 
+// WEB Audio API
+const audio = new Audio();
+
 const goToPreviousSong = () => {
 }
 const pauseSong = () => {}
 const goToNextSong = () => {}
 const shuffleSongs = () => {}
-const playSong = () => {
+const playSong = (id) => {
+    if (userData.currentSong) {
+        playlistContainer.querySelector(`#song-${userData.currentSong.id}`).style.backgroundColor = "#3B3B4F";
+    }
+    // Find the song to be played.
+    const song = userData?.songs.find(song => song.id === id);
+
+    audio.src = song.src;
+    audio.title = song.title
+
+    // The song should play from beginning if it is the selected song
+    if (!userData?.currentSong || userData?.currentSong.id !== song.id) {
+        audio.currentTime = 0;
+
+        // The song should start from where it stopped
+    } else {
+        audio.currentTime = userData?.currentSongTime;
+    }
+
+    userData.currentSong = song;
+
     // Make the PLay Button Yellow
-    playButton.querySelector("img").src="img/svg/play-yellow.svg"
+    playButton.querySelector("img").src="img/svg/play-yellow.svg";
+
+    playlistContainer.querySelector(`#song-${song.id}`).style.backgroundColor = "#1B1B32";
+    audio.play();
 }
 // EVENT LISTENERS
 
-playButton.addEventListener('click', playSong);
+playButton.addEventListener('click', () => {
+    if (!userData?.currentSong) {
+        playSong(userData.songs[0].id);
+    } else {
+        playSong(userData.currentSong.id);
+    }
+});
 previousButton.addEventListener('click', goToPreviousSong);
 pauseButton.addEventListener('click', pauseSong);
 nextButton.addEventListener('click', goToNextSong);
