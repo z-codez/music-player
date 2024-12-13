@@ -19,6 +19,11 @@ function yellowOrWhitePlayButton(bool) {
     }
 }
 
+function getCurrentSongIndex(song) {
+    if (song) return userData.songs.indexOf(song);
+    return userData.songs.indexOf(userData.currentSong);
+}
+
 // WEB Audio API
 const audio = new Audio();
 
@@ -29,7 +34,13 @@ const pauseSong = () => {
     userData.currentSongTime = audio.currentTime;
     yellowOrWhitePlayButton(0);
 }
-const goToNextSong = () => {}
+const goToNextSong = () => {
+    if (!userData?.currentSong) {
+        playSong(userData.songs[0].id);
+    } else {
+        playSong(userData.songs[getCurrentSongIndex() + 1].id);
+    }
+}
 const shuffleSongs = () => {}
 const playSong = (id) => {
     // Revert backgroundColor
@@ -194,7 +205,7 @@ function deleteSong(e) {
                 audio.pause();
                 userData.currentSong = null;
             }
-            return userData.songs.splice(userData.songs.indexOf(song), 1);
+            return userData.songs.splice(getCurrentSongIndex(song), 1);
         }
     });
 
