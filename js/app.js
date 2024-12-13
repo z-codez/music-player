@@ -177,7 +177,13 @@ function displaySongs() {
 
 function deleteSong(e) {
     userData.songs.forEach(song => {
-        if (song.id === Number(e.target.id)) return userData.songs.splice(userData.songs.indexOf(song), 1);
+        if (song.id === Number(e.target.id)) {
+            if (audio.src === song.src) {
+                audio.pause();
+                userData.currentSong = null;
+            }
+            return userData.songs.splice(userData.songs.indexOf(song), 1);
+        }
     });
 
     playlistContainer.innerHTML = "";
