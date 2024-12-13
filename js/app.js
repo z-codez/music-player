@@ -12,10 +12,14 @@ const audio = new Audio();
 
 const goToPreviousSong = () => {
 }
-const pauseSong = () => {}
+const pauseSong = () => {
+    audio.pause();
+    userData.currentSongTime = audio.currentTime;
+}
 const goToNextSong = () => {}
 const shuffleSongs = () => {}
 const playSong = (id) => {
+    // Revert backgroundColor
     if (userData.currentSong) {
         playlistContainer.querySelector(`#song-${userData.currentSong.id}`).style.backgroundColor = "#3B3B4F";
     }
