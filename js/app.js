@@ -13,7 +13,8 @@ const pauseSong = () => {}
 const goToNextSong = () => {}
 const shuffleSongs = () => {}
 const playSong = () => {
-
+    // Make the PLay Button Yellow
+    playButton.querySelector("img").src="img/svg/play-yellow.svg"
 }
 // EVENT LISTENERS
 
@@ -22,16 +23,6 @@ previousButton.addEventListener('click', goToPreviousSong);
 pauseButton.addEventListener('click', pauseSong);
 nextButton.addEventListener('click', goToNextSong);
 shuffleButton.addEventListener('click', shuffleSongs);
-
-
-let currentSong = "";
-
-function selectedSong(e) {
-    currentSong = e.target.id;
-    console.log("Current Song ID:" + currentSong);
-
-    document.getElementById(currentSong).style.backgroundColor = "#1B1B32";
-}
 
 
 const allSongs = [
@@ -107,49 +98,50 @@ const allSongs = [
     },
 ];
 
+const userData = {
+    songs: [...allSongs],
+    currentSong: null,
+    currentSongTime: 0
+};
 
-let userSongs = [...allSongs];
+displaySongs();
 
 function displaySongs() {
-    userSongs.forEach(song => {
+
+    userData.songs.sort((a,b) => {
+        if (a.title < b.title) return -1;
+        if (a.title > b.title) return 1;
+        return 0;
+    })
+    userData.songs.forEach(song => {
 
     const HTMLString = `
-    <li>
-        <div id="${song.id}" class="song-title-artist">
+    <li id="song-${song.id}">
+        <div class="song-title-artist" onclick="playSong(${song.id})">
             <p>${song.title}</p>
             <div>
                 <span>${song.artist}</span>
                 <span>${song.duration}</span>
             </div>
         </div>
-        <button  class="delete ${song.id}" type="button" aria-label="Delete">
-            <img id="${song.id}" src="../svg/delete.svg" alt=""/>
+        <button class="delete ${song.id}" type="button" aria-label="Delete">
+            <img id="${song.id}" src="../img/svg/delete.svg" alt=""/>
         </button>
     </li>
     `;
     playlistContainer.innerHTML += HTMLString;
 })
 
-    const selectSongs = document.querySelectorAll("li > div")
-
     const deleteButtons = document.querySelectorAll(".delete");
 
-    selectSongs.forEach(eachSong => {
-        eachSong.addEventListener('click', selectedSong);
-    })
     deleteButtons.forEach(deleteButton => {
         deleteButton.addEventListener('click', deleteSong);
     });
-
 }
 
-displaySongs();
-
-
-
 function deleteSong(e) {
-    userSongs.forEach(song => {
-        if (song.id === Number(e.target.id)) return userSongs.splice(userSongs.indexOf(song), 1);
+    userData.songs.forEach(song => {
+        if (song.id === Number(e.target.id)) return userData.songs.splice(userData.songs.indexOf(song), 1);
     });
 
     playlistContainer.innerHTML = "";
