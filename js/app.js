@@ -7,6 +7,18 @@ const nextButton = document.getElementById("next");
 const shuffleButton = document.getElementById("shuffle");
 
 
+function yellowOrWhitePlayButton(bool) {
+    if (bool) {
+        // Make the PLay Button Yellow
+        playButton.querySelector("img").src="img/svg/play-yellow.svg";
+
+    } else {
+        // Make the PLay Button Yellow
+        playButton.querySelector("img").src="img/svg/play.svg";
+
+    }
+}
+
 // WEB Audio API
 const audio = new Audio();
 
@@ -15,6 +27,7 @@ const goToPreviousSong = () => {
 const pauseSong = () => {
     audio.pause();
     userData.currentSongTime = audio.currentTime;
+    yellowOrWhitePlayButton(0);
 }
 const goToNextSong = () => {}
 const shuffleSongs = () => {}
@@ -40,8 +53,7 @@ const playSong = (id) => {
 
     userData.currentSong = song;
 
-    // Make the PLay Button Yellow
-    playButton.querySelector("img").src="img/svg/play-yellow.svg";
+    yellowOrWhitePlayButton(1);
 
     playlistContainer.querySelector(`#song-${song.id}`).style.backgroundColor = "#1B1B32";
     audio.play();
