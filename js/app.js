@@ -28,7 +28,10 @@ function getCurrentSongIndex(song) {
 const audio = new Audio();
 
 const goToPreviousSong = () => {
+    if (!userData?.currentSong || getCurrentSongIndex(userData.currentSong) === 0) return;
+    playSong(userData.songs[getCurrentSongIndex(userData.currentSong) - 1].id);
 }
+
 const pauseSong = () => {
     audio.pause();
     userData.currentSongTime = audio.currentTime;
