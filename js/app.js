@@ -256,7 +256,22 @@ function clearPlaylist() {
 }
 
 function deleteSong(e) {
-    userData.songs.forEach(song => {
+
+    // TODO: FINISH RESET BUTTON
+    // Do this when the playlist is empty
+    if (userData?.songs.length === 0) {
+
+        // Create an element using JS
+        const resetButton = document.createElement("div");
+        const resetText = document.createTextNode("Reset Playlist");
+
+        resetButton.id = "reset";
+        resetButton.ariaLabel = "Reset playlist";
+
+
+    }
+
+    userData?.songs.forEach(song => {
         // Find the song to be deleted in songs array.
         if (song.id === Number(e.target.id)) {
             const songCurrentIndex = getCurrentSongIndex(song);
