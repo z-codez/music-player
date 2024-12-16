@@ -6,6 +6,8 @@ const pauseButton = document.getElementById("pause");
 const nextButton = document.getElementById("next");
 const shuffleButton = document.getElementById("shuffle");
 
+const songNameDisplay = document.querySelector(".display-text h2");
+const artistNameDisplay = document.querySelector(".display-text p");
 
 function yellowOrWhitePlayButton(bool) {
     if (bool) {
@@ -70,6 +72,9 @@ const playSong = (id) => {
     yellowOrWhitePlayButton(1);
 
     playlistContainer.querySelector(`#song-${song.id}`).style.backgroundColor = "#1B1B32";
+
+    displaySongDetails();
+
     audio.play();
 }
 // EVENT LISTENERS
@@ -167,6 +172,16 @@ const userData = {
 };
 
 displaySongs();
+
+function displaySongDetails() {
+    songNameDisplay.innerText = userData?.currentSong?.title;
+    artistNameDisplay.innerText = userData?.currentSong?.artist;
+}
+
+function clearSongDetails() {
+    songNameDisplay.innerText = "";
+    artistNameDisplay.innerText = "";
+}
 
 function sortSongs() {
     userData.songs.sort((a, b) => {
