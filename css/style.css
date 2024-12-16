@@ -74,11 +74,11 @@ figure img {
     height: 150px;
     background-color: #1B1B32;
     margin-left: -30px;
+    padding: 0 10px;
 }
 
 [class="display-text"] {
-    padding-left: 10px;
-
+    margin-left: 10px;
     h2 {
         margin-bottom: 0;
         font-weight: 500;

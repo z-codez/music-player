@@ -46,7 +46,11 @@ const goToNextSong = () => {
         playSong(userData.songs[getCurrentSongIndex() + 1].id);
     }
 }
-const shuffleSongs = () => {}
+// TODO: Finish with shuffle functionality.
+const shuffleSongs = () => {
+    // This randomizes an array by returning a mix of positive and negative values to the sort fn.
+    userData?.songs.sort(() => Math.random() - 0.5);
+}
 const playSong = (id) => {
     // Revert backgroundColor
     if (userData.currentSong) {
@@ -174,8 +178,12 @@ const userData = {
 displaySongs();
 
 function displaySongDetails() {
-    songNameDisplay.innerText = userData?.currentSong?.title;
-    artistNameDisplay.innerText = userData?.currentSong?.artist;
+    const currentArtist = userData?.currentSong?.artist;
+    const currentTitle = userData?.currentSong?.title;
+
+    // textContent should be used over innerText whenever possible
+    songNameDisplay.textContent = currentTitle ? currentTitle : "";
+    artistNameDisplay.textContent = currentArtist ? currentArtist : "";
 }
 
 function clearSongDetails() {
@@ -224,11 +232,15 @@ function displaySongs() {
 
 function deleteSong(e) {
     userData.songs.forEach(song => {
+        // Find the song to be deleted in songs array.
         if (song.id === Number(e.target.id)) {
+            // Checks whether song to be deleted is currently playing
             if (audio.src === song.src) {
                 audio.pause();
                 userData.currentSong = null;
+                clearSongDetails();
             }
+            // Returns songs array without deleted song
             return userData.songs.splice(getCurrentSongIndex(song), 1);
         }
     });
