@@ -48,8 +48,12 @@ const goToNextSong = () => {
 }
 // TODO: Finish with shuffle functionality.
 const shuffleSongs = () => {
-    // This randomizes an array by returning a mix of positive and negative values to the sort fn.
-    userData?.songs.sort(() => Math.random() - 0.5);
+    userData.currentSong = null;
+    clearSongDetails();
+    clearPlaylist();
+    displaySongs();
+    audio.pause();
+    yellowOrWhitePlayButton(0);
 }
 const playSong = (id) => {
     // Revert backgroundColor
@@ -175,7 +179,7 @@ const userData = {
     currentSongTime: 0
 };
 
-displaySongs();
+displaySongs("ascending");
 
 function displaySongDetails() {
     const currentArtist = userData?.currentSong?.artist;
@@ -191,12 +195,27 @@ function clearSongDetails() {
     artistNameDisplay.innerText = "";
 }
 
-function sortSongs() {
-    userData.songs.sort((a, b) => {
-        if (a.title < b.title) return -1;
-        if (a.title > b.title) return 1;
-        return 0;
-    })
+function sortSongs(direction) {
+
+    if(direction === "ascending") {
+        userData.songs.sort((a, b) => {
+            if (a.title < b.title) return -1;
+            if (a.title > b.title) return 1;
+            return 0;
+        })
+        return;
+    }
+
+    else if (direction === "descending") {
+        userData.songs.sort((a, b) => {
+            if (a.title > b.title) return -1;
+            if (a.title < b.title) return 1;
+            return 0;
+        })
+        return;
+    }
+    // This randomizes an array by returning a mix of positive and negative values to the sort fn.
+    userData.songs.sort(() => Math.random() - 0.5);
 }
 
 function selectDeleteButtons() {
@@ -207,8 +226,8 @@ function selectDeleteButtons() {
     });
 }
 
-function displaySongs() {
-    sortSongs();
+function displaySongs(direction) {
+    sortSongs(direction);
     userData.songs.forEach(song => {
 
     const HTMLString = `
@@ -230,6 +249,10 @@ function displaySongs() {
     selectDeleteButtons();
 }
 
+function clearPlaylist() {
+    playlistContainer.innerHTML = "";
+}
+
 function deleteSong(e) {
     userData.songs.forEach(song => {
         // Find the song to be deleted in songs array.
@@ -244,8 +267,6 @@ function deleteSong(e) {
             return userData.songs.splice(getCurrentSongIndex(song), 1);
         }
     });
-
-    playlistContainer.innerHTML = "";
+    clearPlaylist();
     displaySongs();
 }
-
