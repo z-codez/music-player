@@ -168,13 +168,24 @@ const userData = {
 
 displaySongs();
 
-function displaySongs() {
-
-    userData.songs.sort((a,b) => {
+function sortSongs() {
+    userData.songs.sort((a, b) => {
         if (a.title < b.title) return -1;
         if (a.title > b.title) return 1;
         return 0;
     })
+}
+
+function selectDeleteButtons() {
+    const deleteButtons = document.querySelectorAll(".delete");
+
+    deleteButtons.forEach(deleteButton => {
+        deleteButton.addEventListener('click', deleteSong);
+    });
+}
+
+function displaySongs() {
+    sortSongs();
     userData.songs.forEach(song => {
 
     const HTMLString = `
@@ -193,12 +204,7 @@ function displaySongs() {
     `;
     playlistContainer.innerHTML += HTMLString;
 })
-
-    const deleteButtons = document.querySelectorAll(".delete");
-
-    deleteButtons.forEach(deleteButton => {
-        deleteButton.addEventListener('click', deleteSong);
-    });
+    selectDeleteButtons();
 }
 
 function deleteSong(e) {
