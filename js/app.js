@@ -51,7 +51,7 @@ const shuffleSongs = () => {
     userData.currentSong = null;
     clearSongDetails();
     clearPlaylist();
-    displaySongs();
+    displaySongs("random");
     audio.pause();
     yellowOrWhitePlayButton(0);
 }
@@ -203,7 +203,7 @@ function sortSongs(direction) {
             if (a.title > b.title) return 1;
             return 0;
         })
-        return;
+
     }
 
     else if (direction === "descending") {
@@ -212,10 +212,12 @@ function sortSongs(direction) {
             if (a.title < b.title) return 1;
             return 0;
         })
-        return;
+
     }
-    // This randomizes an array by returning a mix of positive and negative values to the sort fn.
-    userData.songs.sort(() => Math.random() - 0.5);
+    else if (direction === "random") {
+        // This randomizes an array by returning a mix of positive and negative values to the sort fn.
+        userData.songs.sort(() => Math.random() - 0.5);
+    }
 }
 
 function selectDeleteButtons() {
@@ -268,5 +270,6 @@ function deleteSong(e) {
         }
     });
     clearPlaylist();
+    //displaySongs method without direction parameter, makes no changes to sort.
     displaySongs();
 }
