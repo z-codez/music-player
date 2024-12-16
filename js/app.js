@@ -259,14 +259,16 @@ function deleteSong(e) {
     userData.songs.forEach(song => {
         // Find the song to be deleted in songs array.
         if (song.id === Number(e.target.id)) {
+            const songCurrentIndex = getCurrentSongIndex(song);
             // Checks whether song to be deleted is currently playing
             if (audio.src === song.src) {
                 audio.pause();
-                userData.currentSong = null;
+                userData.currentSong = userData.songs[songCurrentIndex + 1];
                 clearSongDetails();
+                playSong(userData.currentSong.id);
             }
             // Returns songs array without deleted song
-            return userData.songs.splice(getCurrentSongIndex(song), 1);
+            return userData.songs.splice(songCurrentIndex, 1);
         }
     });
     clearPlaylist();
