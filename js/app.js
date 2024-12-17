@@ -286,6 +286,7 @@ function deleteSong(e) {
         clearPlaylistContainer();
         displaySongs();
         if (userData.songs.length > 0) highlightPlayingSong(userData?.currentSong);
+        else reset();
         return;
     }
     deleteSongFromSongsArray();
@@ -295,26 +296,35 @@ function deleteSong(e) {
     if (userData.songs.length > 0 && userData.currentSong !== null) {
         highlightPlayingSong(userData?.currentSong);
     }
-    // TODO: FINISH RESET BUTTON
+
+    if (userData.songs.length === 0) reset();
     // Do this when the playlist is empty
-    if (userData?.songs.length === 0) {
+    function reset() {
+        if (userData?.songs.length === 0) {
+            clearSongDetails();
+            yellowOrWhitePlayButton(0);
 
-        // Create an element using JS
-        const resetButton = document.createElement("div");
-        const resetText = document.createTextNode("Reset Playlist");
 
-        resetButton.id = "reset";
-        resetButton.ariaLabel = "Reset playlist";
+            // Create an element using JS
+            const resetButton = document.createElement("div");
+            const resetText = document.createTextNode("Reset Playlist");
 
-        resetButton.appendChild(resetText);
-        playlistContainer.appendChild(resetButton);
+            resetButton.id = "reset";
+            resetButton.ariaLabel = "Reset playlist";
 
-        resetButton.addEventListener('click', () => {
-            userData.songs = [...allSongs];
-            displaySongs("ascending");
-        })
+            resetButton.appendChild(resetText);
+            playlistContainer.appendChild(resetButton);
+
+            resetButton.addEventListener('click', () => {
+                userData.songs = [...allSongs];
+                userData.currentSong = null;
+                userData.currentSongTime = 0;
+                resetButton.remove();
+                displaySongs("ascending");
+
+            })
+        }
     }
-
 
     function findSongToDelete() {
         let songToReturn = null;
@@ -325,7 +335,6 @@ function deleteSong(e) {
         })
         return songToReturn;
     }
-
 
     function deleteSongFromSongsArray() {
         // Returns songs array without deleted song
