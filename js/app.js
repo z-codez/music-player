@@ -276,19 +276,25 @@ function deleteSong(e) {
 
     const songToDelete = findSongToDelete();
     const songToDeleteIndex = getCurrentSongIndex(songToDelete);
-    deleteSongFromSongsArray();
-    clearPlaylistContainer();
-    displaySongs();
 
     // Checks whether song to be deleted is currently playing
     if (songToDelete.src === audio.src) {
         wasCurrentSongDeleted = true;
         audio.pause();
         goToNextSong();
+        deleteSongFromSongsArray();
+        clearPlaylistContainer();
+        displaySongs();
+        if (userData.songs.length > 0) highlightPlayingSong(userData?.currentSong);
         return;
     }
+    deleteSongFromSongsArray();
+    clearPlaylistContainer();
+    displaySongs();
 
-    highlightPlayingSong(userData.currentSong);
+    if (userData.songs.length > 0 && userData.currentSong !== null) {
+        highlightPlayingSong(userData?.currentSong);
+    }
     // TODO: FINISH RESET BUTTON
     // Do this when the playlist is empty
     if (userData?.songs.length === 0) {
