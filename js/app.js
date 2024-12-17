@@ -46,16 +46,16 @@ const goToNextSong = () => {
         playSong(userData.songs[getCurrentSongIndex() + 1].id);
     }
 }
-// TODO: Finish with shuffle functionality.
 const shuffleSongs = () => {
     userData.currentSong = null;
     clearSongDetails();
-    clearPlaylist();
+    clearPlaylistContainer();
     displaySongs("random");
     audio.pause();
     yellowOrWhitePlayButton(0);
 }
 const playSong = (id) => {
+
     // Revert backgroundColor
     if (userData.currentSong) {
         playlistContainer.querySelector(`#song-${userData.currentSong.id}`).style.backgroundColor = "#3B3B4F";
@@ -181,6 +181,36 @@ const userData = {
 
 displaySongs("ascending");
 
+
+///////////HELPER FUNCTIONS/////////////////////////////////////////////////////////////
+function sortSongs(songArray, direction) {
+    let sortedArray = null;
+
+    if(direction === "ascending") {
+        sortedArray = userData.songs.toSorted((a, b) => {
+            if (a.title < b.title) return -1;
+            if (a.title > b.title) return 1;
+            return 0;
+        })
+    }
+
+    else if (direction === "descending") {
+       sortedArray = userData.songs.toSorted((a, b) => {
+            if (a.title > b.title) return -1;
+            if (a.title < b.title) return 1;
+            return 0;
+        })
+
+    }
+    else if (direction === "random") {
+        // This randomizes an array by returning a mix of positive and negative values to the sort fn.
+        sortedArray = userData.songs.toSorted(() => Math.random() - 0.5);
+    }
+
+    if (sortedArray) return sortedArray;
+    else return songArray
+}
+
 function displaySongDetails() {
     const currentArtist = userData?.currentSong?.artist;
     const currentTitle = userData?.currentSong?.title;
@@ -195,30 +225,7 @@ function clearSongDetails() {
     artistNameDisplay.innerText = "";
 }
 
-function sortSongs(direction) {
 
-    if(direction === "ascending") {
-        userData.songs.sort((a, b) => {
-            if (a.title < b.title) return -1;
-            if (a.title > b.title) return 1;
-            return 0;
-        })
-
-    }
-
-    else if (direction === "descending") {
-        userData.songs.sort((a, b) => {
-            if (a.title > b.title) return -1;
-            if (a.title < b.title) return 1;
-            return 0;
-        })
-
-    }
-    else if (direction === "random") {
-        // This randomizes an array by returning a mix of positive and negative values to the sort fn.
-        userData.songs.sort(() => Math.random() - 0.5);
-    }
-}
 
 function selectDeleteButtons() {
     const deleteButtons = document.querySelectorAll(".delete");
@@ -229,8 +236,8 @@ function selectDeleteButtons() {
 }
 
 function displaySongs(direction) {
-    sortSongs(direction);
-    userData.songs.forEach(song => {
+    const sortedSongs = sortSongs(userData.songs, direction);
+    sortedSongs.forEach(song => {
 
     const HTMLString = `
     <li id="song-${song.id}">
@@ -251,12 +258,35 @@ function displaySongs(direction) {
     selectDeleteButtons();
 }
 
-function clearPlaylist() {
+function clearPlaylistContainer() {
     playlistContainer.innerHTML = "";
 }
 
 function deleteSong(e) {
 
+    let nextSong = null;
+
+    userData?.songs.forEach(song => {
+        // Find the song to be deleted in songs array.
+        if (song.id === Number(e.target.id)) {
+            const songCurrentIndex = getCurrentSongIndex(song);
+            // Checks whether song to be deleted is currently playing
+            if (audio.src === song.src) {
+                userData.currentSong = null;
+                audio.pause();
+                nextSong = userData.songs[songCurrentIndex + 1];
+                clearSongDetails();
+            }
+            // Returns songs array without deleted song
+            return userData.songs.splice(songCurrentIndex, 1);
+        }
+    });
+
+    clearPlaylistContainer();
+    displaySongs();
+    if (nextSong) playSong(nextSong.id);
+    else playlistContainer.querySelector(`#song-${userData.currentSong.id}`)
+        .style.backgroundColor = 'rgb(27, 27, 50)';
     // TODO: FINISH RESET BUTTON
     // Do this when the playlist is empty
     if (userData?.songs.length === 0) {
@@ -268,25 +298,17 @@ function deleteSong(e) {
         resetButton.id = "reset";
         resetButton.ariaLabel = "Reset playlist";
 
+        resetButton.appendChild(resetText);
+        playlistContainer.appendChild(resetButton);
 
+        resetButton.addEventListener('click', () => {
+            userData.songs = [...allSongs];
+            displaySongs("ascending");
+        })
     }
 
-    userData?.songs.forEach(song => {
-        // Find the song to be deleted in songs array.
-        if (song.id === Number(e.target.id)) {
-            const songCurrentIndex = getCurrentSongIndex(song);
-            // Checks whether song to be deleted is currently playing
-            if (audio.src === song.src) {
-                audio.pause();
-                userData.currentSong = userData.songs[songCurrentIndex + 1];
-                clearSongDetails();
-                playSong(userData.currentSong.id);
-            }
-            // Returns songs array without deleted song
-            return userData.songs.splice(songCurrentIndex, 1);
-        }
-    });
-    clearPlaylist();
     //displaySongs method without direction parameter, makes no changes to sort.
-    displaySongs();
+
 }
+
+//TODO: Next song should play after current song ends, until the end of the playlist
