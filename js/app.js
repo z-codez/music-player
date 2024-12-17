@@ -21,11 +21,7 @@ function yellowOrWhitePlayButton(bool) {
     }
 }
 
-function getCurrentSongIndex(song) {
-    if (song) return userData.songs.indexOf(song);
-    return userData.songs.indexOf(userData.currentSong);
-}
-
+let wasCurrentSongDeleted = false;
 // WEB Audio API
 const audio = new Audio();
 
@@ -43,7 +39,11 @@ const goToNextSong = () => {
     if (!userData?.currentSong) {
         playSong(userData.songs[0].id);
     } else {
-        playSong(userData.songs[getCurrentSongIndex() + 1].id);
+        const currentSongIndex = getCurrentSongIndex();
+        if ((userData.songs.length - 1) > currentSongIndex) {
+            playSong(userData.songs[currentSongIndex + 1].id);
+        }
+
     }
 }
 const shuffleSongs = () => {
@@ -57,9 +57,10 @@ const shuffleSongs = () => {
 const playSong = (id) => {
 
     // Revert backgroundColor
-    if (userData.currentSong) {
+    if (userData.currentSong && !wasCurrentSongDeleted) {
         playlistContainer.querySelector(`#song-${userData.currentSong.id}`).style.backgroundColor = "#3B3B4F";
     }
+    wasCurrentSongDeleted = false;
     // Find the song to be played.
     const song = userData?.songs.find(song => song.id === id);
 
@@ -79,7 +80,7 @@ const playSong = (id) => {
 
     yellowOrWhitePlayButton(1);
 
-    playlistContainer.querySelector(`#song-${song.id}`).style.backgroundColor = "#1B1B32";
+    highlightPlayingSong(song);
 
     displaySongDetails();
 
@@ -211,6 +212,10 @@ function sortSongs(songArray, direction) {
     else return songArray
 }
 
+function highlightPlayingSong(playingSong) {
+    playlistContainer.querySelector(`#song-${playingSong.id}`).style.backgroundColor = "#1B1B32";
+}
+
 function displaySongDetails() {
     const currentArtist = userData?.currentSong?.artist;
     const currentTitle = userData?.currentSong?.title;
@@ -224,8 +229,6 @@ function clearSongDetails() {
     songNameDisplay.innerText = "";
     artistNameDisplay.innerText = "";
 }
-
-
 
 function selectDeleteButtons() {
     const deleteButtons = document.querySelectorAll(".delete");
@@ -256,37 +259,36 @@ function displaySongs(direction) {
     playlistContainer.innerHTML += HTMLString;
 })
     selectDeleteButtons();
+
+    userData.songs = sortedSongs;
 }
 
 function clearPlaylistContainer() {
     playlistContainer.innerHTML = "";
 }
 
+function getCurrentSongIndex(song) {
+    if (song) return userData.songs.indexOf(song);
+    return userData.songs.indexOf(userData.currentSong);
+}
+
 function deleteSong(e) {
 
-    let nextSong = null;
-
-    userData?.songs.forEach(song => {
-        // Find the song to be deleted in songs array.
-        if (song.id === Number(e.target.id)) {
-            const songCurrentIndex = getCurrentSongIndex(song);
-            // Checks whether song to be deleted is currently playing
-            if (audio.src === song.src) {
-                userData.currentSong = null;
-                audio.pause();
-                nextSong = userData.songs[songCurrentIndex + 1];
-                clearSongDetails();
-            }
-            // Returns songs array without deleted song
-            return userData.songs.splice(songCurrentIndex, 1);
-        }
-    });
-
+    const songToDelete = findSongToDelete();
+    const songToDeleteIndex = getCurrentSongIndex(songToDelete);
+    deleteSongFromSongsArray();
     clearPlaylistContainer();
     displaySongs();
-    if (nextSong) playSong(nextSong.id);
-    else playlistContainer.querySelector(`#song-${userData.currentSong.id}`)
-        .style.backgroundColor = 'rgb(27, 27, 50)';
+
+    // Checks whether song to be deleted is currently playing
+    if (songToDelete.src === audio.src) {
+        wasCurrentSongDeleted = true;
+        audio.pause();
+        goToNextSong();
+        return;
+    }
+
+    highlightPlayingSong(userData.currentSong);
     // TODO: FINISH RESET BUTTON
     // Do this when the playlist is empty
     if (userData?.songs.length === 0) {
@@ -305,6 +307,23 @@ function deleteSong(e) {
             userData.songs = [...allSongs];
             displaySongs("ascending");
         })
+    }
+
+
+    function findSongToDelete() {
+        let songToReturn = null;
+        userData?.songs?.forEach(song => {
+            if (song.id === Number(e.target.id)) {
+                songToReturn = song;
+            }
+        })
+        return songToReturn;
+    }
+
+
+    function deleteSongFromSongsArray() {
+        // Returns songs array without deleted song
+        userData.songs.splice(songToDeleteIndex, 1);
     }
 
     //displaySongs method without direction parameter, makes no changes to sort.
