@@ -1,5 +1,4 @@
 const playlistContainer = document.getElementById("playlist");
-
 const playButton = document.getElementById("play");
 const previousButton = document.getElementById("previous");
 const pauseButton = document.getElementById("pause");
@@ -8,18 +7,6 @@ const shuffleButton = document.getElementById("shuffle");
 
 const songNameDisplay = document.querySelector(".display-text h2");
 const artistNameDisplay = document.querySelector(".display-text p");
-
-function yellowOrWhitePlayButton(bool) {
-    if (bool) {
-        // Make the PLay Button Yellow
-        playButton.querySelector("img").src="img/svg/play-yellow.svg";
-
-    } else {
-        // Make the PLay Button Yellow
-        playButton.querySelector("img").src="img/svg/play.svg";
-
-    }
-}
 
 let wasCurrentSongDeleted = false;
 // WEB Audio API
@@ -86,8 +73,8 @@ const playSong = (id) => {
 
     audio.play();
 }
-// EVENT LISTENERS
 
+// ////////////////////EVENT LISTENERS ///////////////////////////////
 playButton.addEventListener('click', () => {
     if (!userData?.currentSong) {
         playSong(userData.songs[0].id);
@@ -99,7 +86,7 @@ previousButton.addEventListener('click', goToPreviousSong);
 pauseButton.addEventListener('click', pauseSong);
 nextButton.addEventListener('click', goToNextSong);
 shuffleButton.addEventListener('click', shuffleSongs);
-
+audio.addEventListener('ended', goToNextSong);
 
 const allSongs = [
     {
@@ -345,4 +332,14 @@ function deleteSong(e) {
 
 }
 
-//TODO: Next song should play after current song ends, until the end of the playlist
+function yellowOrWhitePlayButton(bool) {
+    if (bool) {
+        // Make the PLay Button Yellow
+        playButton.querySelector("img").src="img/svg/play-yellow.svg";
+
+    } else {
+        // Make the PLay Button Yellow
+        playButton.querySelector("img").src="img/svg/play.svg";
+
+    }
+}
